@@ -149,7 +149,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
                         print("maintenant c'est un %s" % alloc[y])
                     mutant[6::7] = alloc
                     print("mutation a eu lieu ! apres: %s" % mutant[6::7])
-                del mutant.fitness.values
+                    del mutant.fitness.values
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
@@ -164,13 +164,6 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
 
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
-
-        length = len(pop)
-        mean = sum(fits) / length
-        #sum2 = sum(x * x for x in fits)
-        #std = abs(sum2 / length - mean ** 2) ** 0.5
-
-        i = 0
 
         BestOne = tools.selBest(pop, 5)
         #print("  Best 3 solutions %s" % BestOne)
