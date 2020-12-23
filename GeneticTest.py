@@ -5,7 +5,7 @@ from deap import creator
 from deap import tools
 from math import sin
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0, 1.0))
+creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
@@ -44,12 +44,14 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 
 # ----------
 
-def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
+def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
     random.seed(64)
 
     # create an initial population of 300 individuals (where
     # each individual is a list of integers)
     pop = toolbox.population(n=population_size)
+    for i in pop:
+        print(i[6::7])
 
 
     # CXPB  is the probability with which two individuals
@@ -63,20 +65,20 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
         """Feasibility function for the individual. Returns True if feasible False
     otherwise."""
 
-        if -3 < individual[0] < 9 and individual[1] > 0 and individual[2] != 0:
+        if individual[0] < budget_size:
             return True
         return False
 
     def evalFct(individual, adaptiveP):
         """Evaluation function for the individual."""
-        prix = individual[0]
-        audience = individual[5]
+        prixInd = individual[0]
+        audienceInd = individual[5]
 
         if feasible(individual):
-            return (x1 - 25) ** 2 * sin(x2) * (x3 / 3),
+            return prixInd, audienceInd
         else:
 
-            return ((x1 - 25) ** 2 * sin(x2) * (x3 / 3)) / adaptiveP,
+            return prixInd - adaptiveP, audienceInd - adaptiveP/1000
 
     toolbox.register("evaluate", evalFct, adaptiveP = PenAdapt)
 
@@ -132,17 +134,21 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
                 del child2.fitness.values
 
         for mutant in offspring:
-
+            alloc = mutant[6::7]
             # mutate an individual with probability MUTPB
-            if random.random() < MUTPB:
-                print("mutation a eu lieu ! avant: %s" % mutant[6])
-                if mutant[6] == 1:
-                    mutant[6] = 0
-                    print("mutation a eu lieu ! apres: %s" % mutant[6])
-                else:
-                    mutant[6] = 1
-                    print("mutation a eu lieu ! apres: %s" % mutant[6])
-
+            for y in alloc:
+                if random.random() < MUTPB:
+                    print("mutation a eu lieu ! avant: %s" % mutant[6::7])
+                    if alloc[y] == 1:
+                        print("avant c'etait un %s" % alloc[y])
+                        alloc[y] = 0
+                        print("maintenant c'est un %s" % alloc[y])
+                    else:
+                        print("avant c'etait un %s" % alloc[y])
+                        alloc[y] = 1
+                        print("maintenant c'est un %s" % alloc[y])
+                    mutant[6::7] = alloc
+                    print("mutation a eu lieu ! apres: %s" % mutant[6::7])
                 del mutant.fitness.values
 
         # Evaluate the individuals with an invalid fitness
@@ -167,7 +173,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
         i = 0
 
         BestOne = tools.selBest(pop, 5)
-        print("  Best 3 solutions %s" % BestOne)
+        #print("  Best 3 solutions %s" % BestOne)
 
         # si les 3 best sont faisables
         if all(feasible(i) for i in BestOne):
@@ -190,17 +196,16 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
 
         # fitness function avec pénalité adaptative
         def adaptiveEval(individual, adaptiveP):
-            x1 = individual[0]
-            x2 = individual[1]
-            x3 = individual[2]
+            prixInd = individual[0]
+            audienceInd = individual[5]
 
             if feasible(individual):
-                return (x1 - 25) ** 2 * sin(x2) * (x3 / 3),
+                return prixInd, audienceInd
             else:
-                #
-                return ((x1 - 25) ** 2 * sin(x2) * (x3 / 3)) / adaptiveP,
 
-        toolbox.register("evaluate", adaptiveEval, adaptiveP = PenAdapt)
+                return prixInd - adaptiveP, audienceInd - adaptiveP / 1000
+
+        toolbox.register("evaluate", adaptiveEval, adaptiveP=PenAdapt)
 
 
 
@@ -214,10 +219,10 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
     print(" Pénalité diminuée %s fois" % comptDim)
     print(" Pénalité non changée %s fois" % comptDiv)
     print(" Pénalité %s" % PenAdapt)
-    print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
-    print("Worst individual is %s, %s" % (worst_ind, worst_ind.fitness.values))
+    #print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+    #print("Worst individual is %s, %s" % (worst_ind, worst_ind.fitness.values))
 
 
 
 if __name__ == "__main__":
-    GenAlg(0.5, 0.1, 9, 10)
+    GenAlg(0.5, 0.1, 100, 10, 100)
