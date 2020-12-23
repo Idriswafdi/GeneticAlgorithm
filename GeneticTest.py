@@ -5,7 +5,7 @@ from deap import creator
 from deap import tools
 from math import sin
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0))
+creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0, 1.0))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
@@ -16,14 +16,14 @@ toolbox.register("jour", random.randint, 1, 30)
 toolbox.register("weekend", random.randint, 0, 1)
 toolbox.register("mois", random.randint, 1, 12)
 toolbox.register("horaire", random.randint, 0, 23)
-toolbox.register("audience", random.random, 1.00, 5.00)
+toolbox.register("audience", random.uniform, 1.00, 5.00)
 toolbox.register("alloue", random.randint, 0, 1)
 
 # Nombres d'ecrans dans un individu
-N_Screen=840
+N_Screen = 10
 
 # Structure initializers
-toolbox.register("individual", tools.initRepeat, creator.Individual,
+toolbox.register("individual", tools.initCycle, creator.Individual,
                  (toolbox.prix, toolbox.jour, toolbox.weekend, toolbox.mois, toolbox.horaire, toolbox.audience, toolbox.alloue), n=N_Screen)
 
 # define the population to be a list of individuals
@@ -34,10 +34,6 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 # ----------
 # register the crossover operator
 toolbox.register("mate", tools.cxOnePoint)
-
-# register a mutation operator with a probability to
-# flip each attribute/gene of 0.05
-toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 
 # operator for selecting individuals for breeding the next
 # generation: each individual of the current generation
@@ -54,6 +50,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
     # create an initial population of 300 individuals (where
     # each individual is a list of integers)
     pop = toolbox.population(n=population_size)
+
 
     # CXPB  is the probability with which two individuals
     #       are crossed
@@ -72,9 +69,8 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
 
     def evalFct(individual, adaptiveP):
         """Evaluation function for the individual."""
-        x1 = individual[0]
-        x2 = individual[1]
-        x3 = individual[2]
+        prix = individual[0]
+        audience = individual[5]
 
         if feasible(individual):
             return (x1 - 25) ** 2 * sin(x2) * (x3 / 3),
@@ -139,7 +135,14 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
 
             # mutate an individual with probability MUTPB
             if random.random() < MUTPB:
-                toolbox.mutate(mutant[6])
+                print("mutation a eu lieu ! avant: %s" % mutant[6])
+                if mutant[6] == 1:
+                    mutant[6] = 0
+                    print("mutation a eu lieu ! apres: %s" % mutant[6])
+                else:
+                    mutant[6] = 1
+                    print("mutation a eu lieu ! apres: %s" % mutant[6])
+
                 del mutant.fitness.values
 
         # Evaluate the individuals with an invalid fitness
@@ -164,10 +167,6 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
         i = 0
 
         BestOne = tools.selBest(pop, 5)
-        print("  Min %s" % min(fits))
-        print("  Max %s" % max(fits))
-        print("  Avg %s" % mean)
-        #print("  Std %s" % std)
         print("  Best 3 solutions %s" % BestOne)
 
         # si les 3 best sont faisables
@@ -221,4 +220,4 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size):
 
 
 if __name__ == "__main__":
-    GenAlg(0.5, 0.1, 9, 30)
+    GenAlg(0.5, 0.1, 9, 10)
