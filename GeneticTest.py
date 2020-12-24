@@ -65,7 +65,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
     def feasible(individual):
         """Feasibility function for the individual. Returns True if feasible False
     otherwise."""
-        if sum(individual[0::7]) < budget_size:
+        if sum(individual[0::7]) < budget_size :
             return True
         return False
 
