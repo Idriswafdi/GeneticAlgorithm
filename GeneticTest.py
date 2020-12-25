@@ -52,6 +52,10 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
     # create an initial population of 300 individuals (where
     # each individual is a list of integers)
     pop = toolbox.population(n=population_size)
+    for individual in pop:
+        init = [0] * len(individual[6::7])
+        individual[6::7] = init
+        print(individual[6::7])
 
 
     # CXPB  is the probability with which two individuals
@@ -127,9 +131,9 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
 
             # cross two individuals with probability CXPB
             if random.random() < CXPB:
-                print("before crossover %s, %s: " % (child1, child2))
+                #print("before crossover %s, %s: " % (child1, child2))
                 toolbox.mate(child1, child2)
-                print("new crossover %s, %s: " % (child1, child2))
+                #print("new crossover %s, %s: " % (child1, child2))
 
                 # fitness values of the children
                 # must be recalculated later
@@ -190,7 +194,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
             print(" Aucun changement de pénalité ! %s" % PenAdapt)
             comptDiv = comptDiv + 1
 
-# ----------------------------------------------------MODIF PENALITE---------------------------------------------------
+# ----------------------------------------------------MODIF PENALITE'---------------------------------------------------
 
         # fitness function avec pénalité adaptative
         def adaptiveEval(individual, adaptiveP):
