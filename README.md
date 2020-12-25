@@ -19,13 +19,20 @@ Code de l'algorithme génétique dans le fichier GeneticTest.py
 
 # Composition d'un individu
 
-— Prix(compris entre 100€ et 1500€) : Donnée indiquant le prix
-—Jour(compris entre 1 et 30) : Jour du mois, donnée normalisée
-—Weekend(Booléen) : Donnée qui nous indique si on est en week-end
-—Mois(compris entre 1 et 12) : Donnée indiquant le mois
-—Horaire(compris entre 0 et 23) : Donnée indiquant l’horaire de la journée
-—Audience(compris entre 1.00 et 5.00) : Donnée indiquant l’indice d’audience
-—Alloué(Booléen) : Donnée qui nous indique si le créneaux sera alloué ou pas,donnée initialement à 0.
+- Prix(compris entre 100€ et 1500€) : Donnée indiquant le prix
+
+- Jour(compris entre 1 et 30) : Jour du mois, donnée normalisée
+
+- Weekend(Booléen) : Donnée qui nous indique si on est en week-end
+
+- Mois(compris entre 1 et 12) : Donnée indiquant le mois
+
+- Horaire(compris entre 0 et 23) : Donnée indiquant l’horaire de la journée
+
+- Audience(compris entre 1.00 et 5.00) : Donnée indiquant l’indice d’audience
+
+- Alloué(Booléen) : Donnée qui nous indique si le créneaux sera alloué ou pas,donnée initialement à 0.
+
 
 # Paramétres à rentrer
 
