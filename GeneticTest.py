@@ -49,9 +49,10 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
     random.seed(64)
 
-    # create an initial population of 300 individuals (where
-    # each individual is a list of integers)
+    # create an initial population of n individuals
     pop = toolbox.population(n=population_size)
+
+    # allocation de tous les individus à 0
     for individual in pop:
         init = [0] * len(individual[6::7])
         individual[6::7] = init
