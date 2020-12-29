@@ -21,7 +21,7 @@ toolbox.register("audience", random.uniform, 1.00, 5.00)
 toolbox.register("alloue", random.randint, 0, 1)
 
 # Nombres d'ecrans dans un individu
-N_Screen = 4
+N_Screen = 2
 
 # Structure initializers
 toolbox.register("individual", tools.initCycle, creator.Individual,
@@ -56,7 +56,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
     for individual in pop:
         init = [0] * len(individual[6::7])
         individual[6::7] = init
-        print(individual[6::7])
+        #print(individual[6::7])
 
 
     # CXPB  is the probability with which two individuals
@@ -116,9 +116,11 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
         #print(pop)
         i = 0
         for inf in pop:
+            print("Individuals score: %s, %s, %s" % (sum(inf[0::7]), mean(inf[5::7]), evalFct(inf, PenAdapt)))
             if feasible(inf) is False:
                 #print(inf)
                 i = i+1
+                
         print("  incompatibles: %s" % i)
 
         # Select the next generation individuals
@@ -134,7 +136,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
             if random.random() < CXPB:
                 #print("before crossover %s, %s: " % (child1, child2))
                 toolbox.mate(child1, child2)
-                #print("new crossover %s, %s: " % (child1, child2))
+                #print("after crossover %s, %s: " % (child1, child2))
 
                 # fitness values of the children
                 # must be recalculated later
@@ -186,7 +188,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
 
         # si les 3 best sont infaisables
         elif not any(feasible(i) for i in BestOne):
-            PenAdapt = PenAdapt * 2
+            PenAdapt = PenAdapt + 5
             print(" Pénalité augmentée! %s" % PenAdapt)
             comptAug = comptAug + 1
 
@@ -206,7 +208,7 @@ def GenAlg(CrossoverP, MutationP, PenAdapt, population_size, budget_size):
                 return sum(prixInd), mean(audienceInd)
             else:
 
-                return sum(prixInd) - adaptiveP, mean(audienceInd) - adaptiveP / 1000
+                return sum(prixInd) - adaptiveP, mean(audienceInd) - adaptiveP / 100000
 
         toolbox.register("evaluate", adaptiveEval, adaptiveP=PenAdapt)
 
